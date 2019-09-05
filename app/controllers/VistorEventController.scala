@@ -1,12 +1,16 @@
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, ControllerComponents}
 import services.VisitorEventService
 
-import scala.concurrent.{ExecutionContext}
+import scala.concurrent.ExecutionContext
 
+/*
+ *  main controller to handle api calls
+ */
+@Singleton
 class VistorEventController @Inject()(cc: ControllerComponents, vistorEventService: VisitorEventService)(implicit ec: ExecutionContext) extends AbstractController(cc) {
 
   import models.Constants._

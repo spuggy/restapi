@@ -1,7 +1,5 @@
 package services
 
-import java.time.format.DateTimeFormatter
-
 import javax.inject.{Inject, Singleton}
 import models.{LocationElement, VisitorEvent, VistorEventRepository}
 import org.joda.time.DateTime
@@ -10,9 +8,15 @@ import play.api.libs.json.{JsArray, JsValue}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
+/*
+ *  service layer to abstract JSON parsing, validation and the db
+ */
 @Singleton
 class VisitorEventService @Inject() (db: VistorEventRepository)(implicit ec: ExecutionContext) {
 
+  /*
+   creates VistorEvents from a json payload returns number of events added
+   */
   def create(clientIdStrOpt: Option[String], body: JsValue): Future[Int] = {
 
     val deviceIdOpt = (body \ "deviceId").asOpt[Long]
@@ -45,6 +49,9 @@ class VisitorEventService @Inject() (db: VistorEventRepository)(implicit ec: Exe
     }
   }
 
+  /*
+   returns list of vistor events from a startdate and within an area limited by the boundary
+   */
   def list(startDateStr: String, boundaryListStr: String, limit: Option[Int]): Future[Seq[VisitorEvent]] = {
 
     val startDateOpt = Try(DateTime.parse(startDateStr)).toOption

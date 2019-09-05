@@ -2,7 +2,7 @@ package models
 
 import javax.inject.Inject
 import play.api.libs.json.{Format, Json}
-import anorm.SqlParser.{get, scalar}
+import anorm.SqlParser.get
 import anorm._
 import org.joda.time.DateTime
 import play.api.db.DBApi
@@ -15,7 +15,14 @@ object LocationElement {
 
 case class LocationElement(lat: Double, lon: Double)
 
-case class VisitorEvent(clientId: Long, deviceId: Long, dt: DateTime, model: String, locationElement: LocationElement)
+/*
+ *  a visitor location event
+ */
+case class VisitorEvent(clientId: Long,   // the api client who is using the SDK
+                        deviceId: Long,   // the id of the individual device who submitted the event
+                        dt: DateTime,     // the timestamp of the event
+                        model: String,    // the model of the device e.g iphone 6
+                        locationElement: LocationElement)  // the lat lon of the event
 
 @javax.inject.Singleton
 class VistorEventRepository @Inject() (dbapi: DBApi)(implicit ec: DatabaseExecutionContext) {
@@ -25,7 +32,7 @@ class VistorEventRepository @Inject() (dbapi: DBApi)(implicit ec: DatabaseExecut
   import anorm.JodaParameterMetaData._
 
   private val simple = {
-    get[Long]("client_id") ~
+      get[Long]("client_id") ~
       get[Long]("device_id") ~
       get[String]("model") ~
       get[DateTime]("dt") ~
